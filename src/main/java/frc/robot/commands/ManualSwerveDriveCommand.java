@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.oi.OI;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 
-public class PathPlannerAutoCommand extends Command{
+public class ManualSwerveDriveCommand extends Command{
     private final DriveSubsystem driveSubsystem;
     private final OI oi;
 
-    public PathPlannerAutoCommand(DriveSubsystem driveSubsystem, OI oi){
+    public ManualSwerveDriveCommand(DriveSubsystem driveSubsystem, OI oi){
         this.driveSubsystem = driveSubsystem;
         this.oi = oi;
 

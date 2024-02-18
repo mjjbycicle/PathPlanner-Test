@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.PathPlannerAutoCommand;
+import frc.robot.commands.ManualSwerveDriveCommand;
 import frc.robot.oi.OI;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -26,9 +26,7 @@ public class RobotContainer {
   private SendableChooser<Command> autos;
 
   public RobotContainer() {
-
-    // NamedCommands.registerCommand("PathPlannerAuto", new PathPlannerAutoCommand(drive, oi));
-
+    //autos are in deploy/pathplanner/autos
     autos = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Autons", autos);
 
@@ -38,7 +36,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    drive.setDefaultCommand(new PathPlannerAutoCommand(drive, oi));
+    drive.setDefaultCommand(new ManualSwerveDriveCommand(drive, oi));
   }
 
   public Command getAutonomousCommand() {
