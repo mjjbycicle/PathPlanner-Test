@@ -16,7 +16,7 @@ public class OdometrySubsystem extends SubsystemBase{
         this.driveSubsystem = driveSubsystem;
         this.navx = navx;
         this.odometry = new SwerveDriveOdometry(
-            Constants.RobotInfo.SWERVE_DRIVE_KINEMATICS,
+            Constants.RobotInfo.SwerveInfo.SWERVE_DRIVE_KINEMATICS,
             navx.getRotation2d(), 
             new SwerveModulePosition[] {
             driveSubsystem.getSwerveModule("FL").getPosition(),

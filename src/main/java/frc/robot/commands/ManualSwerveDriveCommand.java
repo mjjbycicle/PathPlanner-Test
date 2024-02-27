@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.oi.OI;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 
@@ -24,9 +25,9 @@ public class ManualSwerveDriveCommand extends Command{
     @Override
     public void execute(){
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
-            oi.getDriverController().getAxis(OI.Axes.LEFT_STICK_Y),
-            oi.getDriverController().getAxis(OI.Axes.LEFT_STICK_X),
-            oi.getDriverController().getAxis(OI.Axes.RIGHT_STICK_X)
+            oi.driverController().getAxis(Constants.Controls.DriverControls.SwerveForwardAxis),
+            -oi.driverController().getAxis(Constants.Controls.DriverControls.SwerveStrafeAxis),
+            oi.driverController().getAxis(Constants.Controls.DriverControls.SwerveRotationAxis)
         );
 
         driveSubsystem.setMovement(chassisSpeeds);

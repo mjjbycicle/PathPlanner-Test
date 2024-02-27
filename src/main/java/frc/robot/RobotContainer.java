@@ -20,12 +20,12 @@ public class RobotContainer {
   private final DriveSubsystem drive = new DriveSubsystem(navx);
   private final OI oi = new OI();
 
-  private SendableChooser<Command> autos;
+  // private SendableChooser<Command> autos;
 
   public RobotContainer() {
     //autos are in deploy/pathplanner/autos
-    autos = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Autons", autos);
+    // autos = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Autons", autos);
 
     drive.resetOdometry(new Pose2d());
 
@@ -37,6 +37,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autos.getSelected();
+    // return autos.getSelected();
+    return null;
   }
 }

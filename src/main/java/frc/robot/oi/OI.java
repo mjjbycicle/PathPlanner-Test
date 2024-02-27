@@ -1,5 +1,9 @@
 package frc.robot.oi;
 
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import java.util.function.BooleanSupplier;
+
 public class OI {
     private final Controller driverController;
     private final Controller operatorController;
@@ -9,11 +13,15 @@ public class OI {
         operatorController = new Controller(1);
     }
 
-    public Controller getOperatorController() {
+    public Trigger on(BooleanSupplier condition) {
+        return new Trigger(condition);
+    }
+
+    public Controller operatorController() {
         return operatorController;
     }
 
-    public Controller getDriverController() {
+    public Controller driverController() {
         return driverController;
     }
 
@@ -53,14 +61,14 @@ public class OI {
         Y_BUTTON(4),
         LEFT_BUMPER(5),
         RIGHT_BUMPER(6),
-        BACK_BUTTON(7),
-        START_BUTTON(8),
-        LEFT_STICK(9),
-        RIGHT_STICK(10),
-        POW_UP(11),
-        POW_RIGHT(12),
-        POW_DOWN(13),
-        POW_LEFT(14);
+        LEFT_STICK(8),
+        RIGHT_STICK(9),
+        POV_UP(10),
+        POV_RIGHT(11),
+        POV_DOWN(12),
+        POV_LEFT(13),
+        LEFT_TRIGGER(14),
+        RIGHT_TRIGGER(15);
 
         private final int id;
 

@@ -8,7 +8,14 @@ import frc.robot.oi.OI;
 @SuppressWarnings("unused")
 public final class Constants {
     public static final double DEADZONE_VALUE = 0.05;
-    public static final int CENTER_LIMELIGHT_AVERAGING_WINDOW_LENGTH = 5;
+    public static final int POSE_WINDOW_LENGTH = 5;
+    public static final double INTAKE_PIVOT_UP_MULTIPLIER = 2;
+
+    public enum CurrentRobot {
+        ZEUS, SIREN
+    }
+
+    public static final CurrentRobot currentRobot = CurrentRobot.SIREN;
 
     private static final double[] oldOffsets = {
         -54.98,
@@ -16,13 +23,16 @@ public final class Constants {
         74.44,
         121.92
     }, newOffsets = {
-        -45.44,
-        -16.52,
-        84.2,
-        -99.45
+        135.36,
+        152.23,
+        -94.98,
+        -88.23
     };
 
-    private static final double[] offsets = oldOffsets;
+    private static final double[] offsets = switch (currentRobot) {
+        case ZEUS -> oldOffsets;
+        case SIREN -> newOffsets;
+    };
 
     public static final class IDs {
         // Swerve uses up motor ids 1-12
@@ -39,79 +49,128 @@ public final class Constants {
                 7, 8, 12, offsets[3]
         );//50.400
 
-        public static final int SHOOTER_MOTOR_LEFT = 13;
-        public static final int SHOOTER_MOTOR_RIGHT = 14;
+        public static final int SHOOTER_SHOOTER_MOTOR = 13;
+        public static final int SHOOTER_PIVOT_MOTOR = 14;
 
         public static final int CLIMBER_LEFT = 15;
         public static final int CLIMBER_RIGHT = 16;
-        public static final int AIM_MOTOR = 17;
 
-        public static final int LEFT_ROTATOR_MOTOR = 18;
-        public static final int RIGHT_ROTATOR_MOTOR = 19;
-        public static final int ROLLER_MOTOR = 21;
+        public static final int HOPPER_MOTOR = 18;
+
+        public static final int INTAKE_PIVOT_MOTOR_LEFT = 22;
+        public static final int INTAKE_PIVOT_MOTOR_RIGHT = 23;
+        public static final int INTAKE_MOTOR = 24;
+
+
+        public static final int SHOOTER_PIVOT_ENCODER_CHANNEL = 0;
+        public static final int INTAKE_ENCODER_CHANNEL = 1;
+        public static final int IR_SENSOR = 3;
     }
 
     public static final class RobotInfo {
-        public static final double centerToWheel = 0.245;
-        public static final SwerveDriveKinematics SWERVE_DRIVE_KINEMATICS = new SwerveDriveKinematics(
-                new Translation2d(centerToWheel, centerToWheel),
-                new Translation2d(centerToWheel, -centerToWheel),
-                new Translation2d(-centerToWheel, centerToWheel),
-                new Translation2d(-centerToWheel, -centerToWheel)
-        );
+        public static final class SwerveInfo {
+            public static final double centerToWheel = 0.245;
+            public static final SwerveDriveKinematics SWERVE_DRIVE_KINEMATICS = new SwerveDriveKinematics(
+                    new Translation2d(centerToWheel, centerToWheel),
+                    new Translation2d(centerToWheel, -centerToWheel),
+                    new Translation2d(-centerToWheel, centerToWheel),
+                    new Translation2d(-centerToWheel, -centerToWheel)
+            );
 
-        public static final double MOVEMENT_SPEED = 0.5;
-        public static final double MAX_ROBOT_SPEED = 2.3;
-        public static final double TRAP_ROTATOR_SPEED = 0.5;
-        public static final double TRAP_ROLLER_RELEASE_SPEED = 0.5;
-        public static final double TRAP_ROLLER_INTAKE_SPEED = 0.5;
-        public static final double TRAP_BACK_ROTATOR_DEGREES = -30;
-        public static final double TRAP_FRONT_ROTATOR_DEGREES = 90;
-        public static final double TRAP_EXTEND_TIME = 15;
-        public static final double TRAP_RELEASE_TIME = 20;
-        public static final double TRAP_FINAL_TIME = 25;
-        public static final double INTAKE_SPEED = 0.5;
-        public static final double CLIMBER_SPEED = 0.5;
-        public static final double AIM_ERROR_RADIANS = 0.1;
-        public static final double AIM_ERROR_CM = 25;
-        public static final double AIM_SPEED = 0.2;
-        public static final double ERROR_CORRECTION_FACTOR = 0.1;
+            // Change MOVEMENT_SPEED to 1.0 for max speed
+            public static final double CURRENT_MAX_ROBOT_MPS = 2;
+            public static final double MAX_ROBOT_MPS = 2;
+            public static final double MAX_ROBOT_MPS_SHOOTING = .5;
+            public static final double MOVEMENT_SPEED = 1;
+            public static final double MAX_ROBOT_SPEED = 2.5;
+            public static final PID SWERVE_ROTATOR_PID = new PID(
+                0.0085
+            );
+            public static final PID SWERVE_DRIVER_PID = new PID(
+                0.65
+            );
+        }
 
-        public static final PID SWERVE_FIELD_ROTATION_PID = new PID(
-          0, 0, 0
-        );
+        public static final class TrapInfo {
 
-        public static final PID SWERVE_FIELD_X_PID = new PID(
-          0, 0, 0
-        );
+            public static final double TRAP_ROTATOR_SPEED = 0.5;
+            public static final double TRAP_ROLLER_RELEASE_SPEED = 0.5;
+            public static final double TRAP_ROLLER_INTAKE_SPEED = 0.5;
+            public static final double TRAP_BACK_ROTATOR_DEGREES = -30;
+            public static final double TRAP_FRONT_ROTATOR_DEGREES = 90;
+            public static final double TRAP_EXTEND_TIME = 15;
+            public static final double TRAP_RELEASE_TIME = 20;
+            public static final double TRAP_FINAL_TIME = 25;
+            // TODO: find actual values
+            public static final PID TRAP_ROTATOR_PID = new PID(
+                    0, 0, 0
+            );
+        }
 
-        public static final PID SWERVE_FIELD_Y_PID = new PID(
-          0, 0, 0
-        );
+        public static final class IntakeInfo {
 
-        public static final PID SWERVE_ROTATOR_PID = new PID(
-            0.0085
-        );
+            public static final double INTAKE_SPEED = -0.6 * 1.3;
+            public static final double INTAKE_PIVOT_DEFAULT_SETPOINT = 0.45;
+            public static final double INTAKE_PIVOT_EXTENDED_SETPOINT = 0.69;
+            // TODO: find actual values
+            public static final PID INTAKE_PIVOT_PID = new PID(
+                    .5, 0, 0
+            );
+        }
 
-        // TODO: find actual values
-        public static final PID SHOOTER_AIM_PID = new PID(
-                0, 0, 0
-        );
+        public static final class HopperInfo {
 
-        // TODO: find actual values
-        public static final PID INTAKE_PIVOT_PID = new PID(
-                0, 0, 0
-        );
+            public static final double HOPPER_SPEED = 0.7;
+            public static final boolean usingIRSensor = true;
+        }
 
-        // TODO: find actual values
-        public static final PID TRAP_ROTATOR_PID = new PID(
-                0, 0, 0
-        );
+        public static final class ClimberInfo {
 
-        public static final PID ROTATION_PID = new PID(
-                0.5, 0.0002, 0.03
-        );
+            public static final double CLIMBER_SPEED = 0.9;
+        }
 
+        public static final class AimInfo {
+
+            public static final double AIM_ERROR_RADIANS = 0.1;
+            public static final double AIM_ERROR_CM = 25;
+            public static final double AIM_SPEED = 0.2;
+            public static final double AIM_SHOOTER_ERROR_CORRECTION_FACTOR = 0.1;
+            public static final PID LIMELIGHT_AIM_PID = new PID(
+                    0.1, 0.001, 0.015
+            );
+
+            public enum LIMELIGHT_STATUS{
+                LIMELIGHT, MANUAL
+            }
+        }
+
+        public static class ShooterInfo {
+            public record ShooterSetpoint(double speed, double angle){}
+            public record ShooterSetpointMeasurement(double distance, ShooterSetpoint setpoint) {}
+
+            public enum SHOOTING_MODE{
+                SPEAKER, AMP
+            }
+
+            public static final ShooterSetpointMeasurement[] measurements = {
+                new ShooterSetpointMeasurement(2.4, new ShooterSetpoint(30, .84)),
+                new ShooterSetpointMeasurement(2.84, new ShooterSetpoint(40, .865)),
+                new ShooterSetpointMeasurement(3.6, new ShooterSetpoint(50, .89)),
+            };
+
+            public static final double MAX_SHOOTER_PIVOT_SPEED = 0.1;
+            public static final double TARGET_SPEAKER_SHOOTER_SPEED = 40;
+            public static final double TARGET_IDLE_SHOOTER_SPEED = 0.2;
+            public static final double SHOOTER_PIVOT_BOTTOM_SETPOINT = .90;
+            public static final double SHOOTER_PIVOT_AMP_SETPOINT = .85;
+            public static final double SHOOTER_VOLTAGE = 6;
+            public static final double TARGET_AMP_SHOOTER_SPEED = 11;
+            public static final double SHOOTER_PIVOT_SPEAKER_SETPOINT = .835;
+
+            public static final PID SHOOTER_AIM_PID = new PID(
+                    3.5, 0, 0
+            );
+        }
     }
 
     public record SwerveModuleConfig(
@@ -145,17 +204,33 @@ public final class Constants {
     }
 
     public static final class Controls {
-        public static final OI.Axes ShooterPivotAxis = OI.Axes.LEFT_STICK_Y;
-        public static final OI.Buttons TrapReleaseButton = OI.Buttons.RIGHT_BUMPER;
-        public static final OI.Buttons ShooterButton = OI.Buttons.LEFT_BUMPER;
-        public static final OI.Buttons ClimberExtendButton = OI.Buttons.Y_BUTTON;
-        public static final OI.Buttons ClimberRetractButton = OI.Buttons.X_BUTTON;
 
-        public static final OI.Axes SwerveForwardAxis = OI.Axes.LEFT_STICK_Y;
-        public static final OI.Axes SwerveStrafeAxis = OI.Axes.LEFT_STICK_X;
-        public static final OI.Axes SwerveRotationAxis = OI.Axes.RIGHT_STICK_X;
+        public static final class DriverControls {
+            public static final OI.Axes SwerveForwardAxis = OI.Axes.LEFT_STICK_Y;
+            public static final OI.Axes SwerveStrafeAxis = OI.Axes.LEFT_STICK_X;
+            public static final OI.Axes SwerveRotationAxis = OI.Axes.RIGHT_STICK_X;
+            public static final OI.Buttons AimButton = OI.Buttons.LEFT_TRIGGER;
 
-        public static final OI.Buttons LimeLightCenterButton = OI.Buttons.A_BUTTON;
+            public static final OI.Buttons ClimberExtendButton = OI.Buttons.LEFT_BUMPER;
+            public static final OI.Buttons ClimberRetractButton = OI.Buttons.RIGHT_BUMPER;
+            public static final OI.Buttons ClimberSwap1Button = OI.Buttons.POV_LEFT;
+            public static final OI.Buttons ClimberSwap2Button = OI.Buttons.POV_RIGHT;
+        }
+
+        public static final class OperatorControls {
+            public static final OI.Buttons RunSpeakerShooterButton = OI.Buttons.RIGHT_TRIGGER;
+            public static final OI.Buttons RunAmpShooterButton = OI.Buttons.LEFT_BUMPER;
+            public static final OI.Buttons ManualShooterButton = OI.Buttons.LEFT_TRIGGER;
+
+            public static final OI.Buttons IntakeButton = OI.Buttons.X_BUTTON;
+            public static final OI.Buttons OuttakeButton = OI.Buttons.Y_BUTTON;
+            public static final OI.Buttons IntakeExtendButton = OI.Buttons.POV_DOWN;
+            public static final OI.Buttons IntakeRetractButton = OI.Buttons.POV_UP;
+
+            public static final OI.Buttons ShooterPivotTop = OI.Buttons.LEFT_BUMPER;
+            public static final OI.Buttons ShooterPivotBot = OI.Buttons.B_BUTTON;
+
+        }
     }
 
     public static final class FieldDistances{

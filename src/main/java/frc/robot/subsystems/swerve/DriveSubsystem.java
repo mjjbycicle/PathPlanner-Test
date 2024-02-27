@@ -38,7 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
         this.navx = navx;
         chassisSpeeds = new ChassisSpeeds(0, 0, 0);
 
-        AutoBuilder.configureHolonomic(
+        /*AutoBuilder.configureHolonomic(
             this::getPose, // Robot pose supplier
             this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -57,12 +57,12 @@ public class DriveSubsystem extends SubsystemBase {
 
               var alliance = DriverStation.getAlliance();
               if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
+                return alliance.get() == DriverStation.Alliance.Blue;
               }
               return false;
             },
             this // Reference to this subsystem to set requirements
-        );
+        );*/
     }
 
     public Rotation2d getRotation2d() {
@@ -76,7 +76,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void setRawMovement(ChassisSpeeds chassisSpeeds) {
-        SwerveModuleState[] swerveModuleStates = Constants.RobotInfo.SWERVE_DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
+        SwerveModuleState[] swerveModuleStates = Constants.RobotInfo.SwerveInfo.SWERVE_DRIVE_KINEMATICS.toSwerveModuleStates(chassisSpeeds);
         setModulesStates(
             swerveModuleStates[0],
             swerveModuleStates[1],

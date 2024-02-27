@@ -36,7 +36,7 @@ public class SwerveModule {
 
         rotationOffsetDegrees = swerveModuleData.rotationOffset();
 
-        rotationPID = Constants.RobotInfo.SWERVE_ROTATOR_PID.create(swerveModuleData.rotatorPIDkPMultiplier());
+        rotationPID = Constants.RobotInfo.SwerveInfo.SWERVE_ROTATOR_PID.create(swerveModuleData.rotatorPIDkPMultiplier());
         rotationPID.setTolerance(0.1);
         rotationPID.enableContinuousInput(-180, 180);
 
@@ -66,7 +66,7 @@ public class SwerveModule {
         SmartDashboard.putString("Module %d rotator PID output".formatted(moduleID), "%.2f".formatted(rotatorPIDOutput));
 
         rotator.set(rotatorPIDOutput);
-        driver.set(speed * Constants.RobotInfo.MOVEMENT_SPEED);
+        driver.set(speed * Constants.RobotInfo.SwerveInfo.MOVEMENT_SPEED);
     }
 
     public double getRotationInDegrees() {
